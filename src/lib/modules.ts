@@ -35,9 +35,10 @@ export const modules = [
 export type KidModule = (typeof modules)[number];
 
 // Offers keep their deliverable attached, but it is never rendered or downloaded from the locked card until purchase verification exists.
+// The buy button points to the user-provided Cakto checkout; the deliverable pointer stays hidden from the card.
 export const extraModules = [
-  { id: 'kit-regulacao-emocional', title: 'Kit de Regulação Emocional para Crianças Autistas', category: 'Rotina e autonomia', cover: emotionalCover, pdf: pdfRegulacao.url, pages: 19, locked: true, description: 'Cartões de emoções, necessidades e apoio, semáforo de comunicação, guia para momentos difíceis e cinco atividades práticas.' },
-  { id: 'kit-autonomia', title: 'Kit de Autonomia para Crianças Autistas', category: 'Rotina e autonomia', cover: autonomyCover, pdf: pdfAutonomia.url, pages: 21, locked: true, description: 'Cartões de rotina, guias de higiene e de vestir-se, etiquetas, tarefas de casa e plano individual de apoio.' },
+  { id: 'kit-regulacao-emocional', title: 'Kit de Regulação Emocional para Crianças Autistas', category: 'Rotina e autonomia', cover: emotionalCover, pdf: pdfRegulacao.url, buyUrl: 'https://pay.cakto.com.br/7qj468z_1188129', pages: 19, locked: true, description: 'Cartões de emoções, necessidades e apoio, semáforo de comunicação, guia para momentos difíceis e cinco atividades práticas.' },
+  { id: 'kit-autonomia', title: 'Kit de Autonomia para Crianças Autistas', category: 'Rotina e autonomia', cover: autonomyCover, pdf: pdfAutonomia.url, buyUrl: 'https://pay.cakto.com.br/mg4ewrv_1188138', pages: 21, locked: true, description: 'Cartões de rotina, guias de higiene e de vestir-se, etiquetas, tarefas de casa e plano individual de apoio.' },
 ] as const;
 export type ExtraModule = (typeof extraModules)[number];
 
