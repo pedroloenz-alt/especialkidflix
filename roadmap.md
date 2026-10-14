@@ -3,3 +3,5 @@
 - [x] Disponibilizar leitura e download dos materiais originais.
 - [x] Personalizar com nomes do responsável e criança, sem login.
 - [x] Verificar navegação, busca, favoritos e apresentação.
+- [x] Adicionar dois módulos extras bloqueados com capas próprias, cadeado e chamada solicitada, sem integração de compra.
+- [x] Verificar apresentação dos extras e preservar acesso aos nove materiais existentes.
