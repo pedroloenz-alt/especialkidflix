@@ -5,3 +5,4 @@
 - [x] Verificar navegação, busca, favoritos e apresentação.
 - [x] Adicionar dois módulos extras bloqueados com capas próprias, cadeado e chamada solicitada, sem integração de compra.
 - [x] Verificar apresentação dos extras e preservar acesso aos nove materiais existentes.
+- [x] Anexar cada entregável ao seu kit (Regulação Emocional e Autonomia), mantendo os cartões bloqueados e sem download até a verificação de compra.
