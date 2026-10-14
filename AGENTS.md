@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 - Keep the catalog and educational module metadata in one browser-safe shared module; all catalog surfaces use the same source to avoid divergent resources.
+- Keep locked upsell metadata separate from available educational modules in the shared catalog and render noninteractive offer cards; this prevents offers from entering PDF downloads, favorites or local completion flows before purchase verification exists.
 - Personalization, favorites and explored modules are device-local, not authentication; never use family names as an authorization boundary or upload them to a public database.
 - Serve original uploaded PDFs through Lovable Assets pointers and generated artwork through bundled imports; keep binary documents out of the repository.
 - Keep distinct content views in TanStack file routes and shared navigation in the Kidflix shell; the public index is the actual library experience.

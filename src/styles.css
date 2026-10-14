@@ -261,6 +261,15 @@ input:focus-visible { box-shadow: 0 0 0 2px var(--primary); }
 .module-card-bottom { border-top: 1px solid var(--border); padding-top: 12px; margin-top: 16px; display: flex; justify-content: space-between; color: var(--muted-foreground); font-size: 8px; align-items: center; }
 .module-card-bottom span { display: flex; align-items: center; gap: 6px; }
 .module-card-bottom > a { color: var(--foreground); }
+.locked-module-card { border-color: color-mix(in oklab, var(--gold) 25%, var(--border)); }
+.locked-module-card:hover { transform: none; box-shadow: none; border-color: color-mix(in oklab, var(--gold) 35%, var(--border)); }
+.locked-module-cover { background: var(--background); }
+.locked-module-cover .module-cover { opacity: .58; }
+.locked-module-card:hover .module-cover { transform: none; }
+.module-lock { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 52px; height: 52px; border-radius: 50%; background: var(--overlay); color: var(--foreground); display: flex; align-items: center; justify-content: center; border: 1px solid color-mix(in oklab, var(--foreground) 28%, transparent); backdrop-filter: blur(4px); }
+.locked-module-card .module-category { color: var(--gold); font-size: 10px; line-height: 1.6; display: block; }
+.locked-module-card h3 { overflow-wrap: anywhere; }
+.locked-module-card .module-card-bottom { color: var(--gold); }
 .closing-note { margin: 0 42px 35px; padding: 25px 0; border-top: 1px solid var(--border); display: flex; gap: 15px; align-items: center; }
 .closing-note > svg { color: var(--coral); }
 .closing-note h3 { font-size: 12px; font-weight: 600; }

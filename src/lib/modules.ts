@@ -7,6 +7,8 @@ import cover6 from '@/assets/module-6.jpg';
 import cover7 from '@/assets/module-7.jpg';
 import cover8 from '@/assets/module-8.jpg';
 import cover9 from '@/assets/module-9.jpg';
+import emotionalCover from '@/assets/module-emotional-regulation.jpg';
+import autonomyCover from '@/assets/module-autonomy.jpg';
 import pdf1 from '@/assets/alfabeto.pdf.asset.json';
 import pdf2 from '@/assets/animais.pdf.asset.json';
 import pdf3 from '@/assets/bingo.pdf.asset.json';
@@ -29,6 +31,13 @@ export const modules = [
   { id: 'sons', title: 'Sons que Ensinam a Ler', category: 'Alfabetização', cover: cover9, pdf: pdf9.url, pages: 6, subtitle: 'A descoberta da leitura começa nos sons.', description: 'Pranchas de letras e movimentos da boca para explorar os sons da fala com um espelho.', materials: 'Um espelho e as pranchas impressas.', steps: ['Escolham uma letra da prancha.', 'Observem juntos como a boca se movimenta.', 'Experimentem o som e encontrem palavras com essa letra.'] },
 ];
 export type KidModule = (typeof modules)[number];
+
+// Offers have no deliverable or local unlock state; purchase verification comes later.
+export const extraModules = [
+  { id: 'kit-regulacao-emocional', title: 'Kit de Regulação Emocional para Crianças Autistas', category: 'Rotina e autonomia', cover: emotionalCover, locked: true },
+  { id: 'kit-autonomia', title: 'Kit de Autonomia para Crianças Autistas', category: 'Rotina e autonomia', cover: autonomyCover, locked: true },
+] as const;
+export type ExtraModule = (typeof extraModules)[number];
 
 export function pageHead(title: string, description: string) {
   return { meta: [{ title: `${title} | Especial Kidflix` }, { name: 'description', content: description }, { property: 'og:title', content: `${title} | Especial Kidflix` }, { property: 'og:description', content: description }, { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary_large_image' }] };
