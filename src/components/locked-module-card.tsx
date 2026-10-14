@@ -1,4 +1,4 @@
-import { LockKeyhole } from 'lucide-react';
+import { FileText, LockKeyhole } from 'lucide-react';
 import type { ExtraModule } from '@/lib/modules';
 
 export function LockedModuleCard({ module, index }: { module: ExtraModule; index: number }) {
@@ -11,7 +11,8 @@ export function LockedModuleCard({ module, index }: { module: ExtraModule; index
     <div className="module-card-body">
       <span className="module-category">Tenha acesso ao módulo extra!</span>
       <h3>{module.title}</h3>
-      <div className="module-card-bottom"><span><LockKeyhole size={13} />Bloqueado</span></div>
+      <p>{module.description}</p>
+      <div className="module-card-bottom"><span><FileText size={13} />Material completo · {module.pages} páginas</span><span><LockKeyhole size={13} />Bloqueado</span></div>
     </div>
   </article>;
 }
