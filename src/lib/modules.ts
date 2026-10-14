@@ -9,6 +9,8 @@ import cover8 from '@/assets/module-8.jpg';
 import cover9 from '@/assets/module-9.jpg';
 import emotionalCover from '@/assets/module-emotional-regulation.jpg';
 import autonomyCover from '@/assets/module-autonomy.jpg';
+import pdfRegulacao from '@/assets/kit-regulacao-emocional.pdf.asset.json';
+import pdfAutonomia from '@/assets/kit-autonomia.pdf.asset.json';
 import pdf1 from '@/assets/alfabeto.pdf.asset.json';
 import pdf2 from '@/assets/animais.pdf.asset.json';
 import pdf3 from '@/assets/bingo.pdf.asset.json';
@@ -32,10 +34,10 @@ export const modules = [
 ];
 export type KidModule = (typeof modules)[number];
 
-// Offers have no deliverable or local unlock state; purchase verification comes later.
+// Offers keep their deliverable attached, but it is never rendered or downloaded from the locked card until purchase verification exists.
 export const extraModules = [
-  { id: 'kit-regulacao-emocional', title: 'Kit de Regulação Emocional para Crianças Autistas', category: 'Rotina e autonomia', cover: emotionalCover, locked: true },
-  { id: 'kit-autonomia', title: 'Kit de Autonomia para Crianças Autistas', category: 'Rotina e autonomia', cover: autonomyCover, locked: true },
+  { id: 'kit-regulacao-emocional', title: 'Kit de Regulação Emocional para Crianças Autistas', category: 'Rotina e autonomia', cover: emotionalCover, pdf: pdfRegulacao.url, pages: 19, locked: true, description: 'Cartões de emoções, necessidades e apoio, semáforo de comunicação, guia para momentos difíceis e cinco atividades práticas.' },
+  { id: 'kit-autonomia', title: 'Kit de Autonomia para Crianças Autistas', category: 'Rotina e autonomia', cover: autonomyCover, pdf: pdfAutonomia.url, pages: 21, locked: true, description: 'Cartões de rotina, guias de higiene e de vestir-se, etiquetas, tarefas de casa e plano individual de apoio.' },
 ] as const;
 export type ExtraModule = (typeof extraModules)[number];
 
