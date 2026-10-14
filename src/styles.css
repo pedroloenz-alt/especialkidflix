@@ -270,6 +270,9 @@ input:focus-visible { box-shadow: 0 0 0 2px var(--primary); }
 .locked-module-card .module-category { color: var(--gold); font-size: 10px; line-height: 1.6; display: block; }
 .locked-module-card h3 { overflow-wrap: anywhere; }
 .locked-module-card .module-card-bottom { color: var(--gold); }
+.buy-now-button { margin-top: 14px; width: 100%; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: #1c1502; background: var(--gold); border: none; animation: buy-now-pulse 2.4s ease-in-out infinite; }
+.buy-now-button:hover { background: var(--gold); filter: brightness(1.06); }
+@keyframes buy-now-pulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 color-mix(in oklab, var(--gold) 45%, transparent); } 50% { transform: scale(1.025); box-shadow: 0 0 0 7px color-mix(in oklab, var(--gold) 0%, transparent); } }
 .closing-note { margin: 0 42px 35px; padding: 25px 0; border-top: 1px solid var(--border); display: flex; gap: 15px; align-items: center; }
 .closing-note > svg { color: var(--coral); }
 .closing-note h3 { font-size: 12px; font-weight: 600; }

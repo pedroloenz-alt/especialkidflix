@@ -13,27 +13,29 @@ describe('Locked extra modules', () => {
     }
   });
 
-  it('attaches each deliverable to its own kit', () => {
+  it('attaches each deliverable and its own Cakto checkout to its kit', () => {
     const regulacao = extraModules.find(m => m.id === 'kit-regulacao-emocional');
     const autonomia = extraModules.find(m => m.id === 'kit-autonomia');
     expect(regulacao?.pdf).toContain('kit-regulacao-emocional.pdf');
     expect(autonomia?.pdf).toContain('kit-autonomia.pdf');
     expect(regulacao?.pdf).not.toBe(autonomia?.pdf);
-    expect(regulacao?.pages).toBe(19);
-    expect(autonomia?.pages).toBe(21);
+    expect(regulacao?.buyUrl).toBe('https://pay.cakto.com.br/7qj468z_1188129');
+    expect(autonomia?.buyUrl).toBe('https://pay.cakto.com.br/mg4ewrv_1188138');
+    expect(regulacao?.buyUrl).not.toBe(autonomia?.buyUrl);
   });
 
-  it('shows each title, invitation and lock without access controls', () => {
+  it('shows title, invitation, lock and buy button without exposing the deliverable', () => {
     extraModules.forEach((module, index) => {
       const html = renderToStaticMarkup(<LockedModuleCard module={module} index={index} />);
       expect(html).toContain(module.title);
       expect(html).toContain('Tenha acesso ao módulo extra!');
       expect(html).toContain('Bloqueado');
       expect(html).toContain('module-lock');
-      expect(html).toContain(`${module.pages} páginas`);
+      expect(html).toContain('Comprar agora');
+      expect(html).toContain(module.buyUrl);
+      expect(html).not.toContain(`${module.pages} páginas`);
+      expect(html).not.toContain(module.pdf);
       expect(html).not.toContain('assets-v1');
-      expect(html).not.toContain('<a ');
-      expect(html).not.toContain('<button');
       expect(html).not.toContain('<iframe');
     });
   });
