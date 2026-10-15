@@ -67,6 +67,9 @@ export function KitAccessProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // VIP Admin emails with full access unlocked
+  const ADMIN_EMAILS = ['pedro_-_loenz2000@outlook.com'];
+
   // 2. Check Database for unlocked kits by email
   const checkEmailAccess = useCallback(async (targetEmail: string) => {
     if (!targetEmail) return;
@@ -74,6 +77,16 @@ export function KitAccessProvider({ children }: { children: ReactNode }) {
     const cleanEmail = targetEmail.trim().toLowerCase();
     setEmail(cleanEmail);
     localStorage.setItem('kidflix-user-email', cleanEmail);
+
+    if (ADMIN_EMAILS.includes(cleanEmail)) {
+      setUnlocked(prev => {
+        const updated = { ...prev, ...PDF_URLS };
+        localStorage.setItem('kidflix-unlocked-kits', JSON.stringify(updated));
+        return updated;
+      });
+      setLoading(false);
+      return;
+    }
 
     try {
       const { data, error } = await supabase
