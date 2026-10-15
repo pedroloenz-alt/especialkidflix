@@ -8,6 +8,13 @@
       "when": 1792026670109,
       "tag": "0000_create_kit_purchases",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792026698853,
+      "tag": "0001_add_private_kit_access_checks",
+      "breakpoints": true
     }
   ]
 }
