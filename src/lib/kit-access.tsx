@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { getMyKits } from '@/lib/kit-access.functions';
 
 export const FRONTEND_CHECKOUT_URL = 'https://pay.cakto.com.br/65yqee3_1187727';
+export const DOWNSELL_UPGRADE_URL = 'https://pay.cakto.com.br/9hqtwqo';
 
 export type PlanType = 'full' | 'downsell';
 
@@ -187,8 +188,8 @@ export function KitAccessProvider({ children }: { children: ReactNode }) {
   };
 
   const upgradeUrl = email
-    ? `${FRONTEND_CHECKOUT_URL}${FRONTEND_CHECKOUT_URL.includes('?') ? '&' : '?'}email=${encodeURIComponent(email)}`
-    : FRONTEND_CHECKOUT_URL;
+    ? `${DOWNSELL_UPGRADE_URL}${DOWNSELL_UPGRADE_URL.includes('?') ? '&' : '?'}email=${encodeURIComponent(email)}`
+    : DOWNSELL_UPGRADE_URL;
 
   return (
     <Ctx.Provider value={{ email, plan, unlocked, loading, sendLink, signOut, upgradeUrl }}>
@@ -207,7 +208,7 @@ export function useKitAccess() {
       loading: false,
       sendLink: async () => null,
       signOut: async () => {},
-      upgradeUrl: FRONTEND_CHECKOUT_URL,
+      upgradeUrl: DOWNSELL_UPGRADE_URL,
     };
   }
   return ctx;
