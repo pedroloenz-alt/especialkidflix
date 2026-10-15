@@ -100,7 +100,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      kit_access_list: { Args: { _email: string }; Returns: string[] }
+      kit_access_state: {
+        Args: { _email: string; _product_key: string }
+        Returns: boolean
+      }
     }
     Enums: {
       purchase_status: "pending" | "paid" | "refunded" | "chargeback"

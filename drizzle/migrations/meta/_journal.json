@@ -22,6 +22,13 @@
       "when": 1792026703086,
       "tag": "0002_drop_deprecated_public_access_checks",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792026727424,
+      "tag": "0003_expose_kit_access_checks_to_server",
+      "breakpoints": true
     }
   ]
 }
