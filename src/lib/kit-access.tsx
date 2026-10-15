@@ -3,12 +3,18 @@ import { useServerFn } from '@tanstack/react-start';
 import { supabase } from '@/integrations/supabase/client';
 import { getMyKits } from '@/lib/kit-access.functions';
 
+export const FRONTEND_CHECKOUT_URL = 'https://pay.cakto.com.br/65yqee3_1187727';
+
+export type PlanType = 'full' | 'downsell';
+
 type KitAccess = {
   email: string | null;
+  plan: PlanType;
   unlocked: Record<string, string>;
   loading: boolean;
   sendLink: (email: string) => Promise<string | null>;
   signOut: () => Promise<void>;
+  upgradeUrl: string;
 };
 
 const Ctx = createContext<KitAccess | null>(null);
@@ -27,6 +33,14 @@ export function KitAccessProvider({ children }: { children: ReactNode }) {
     if (typeof window === 'undefined') return null;
     return localStorage.getItem('kidflix-user-email');
   });
+  const [plan, setPlan] = useState<PlanType>(() => {
+    if (typeof window === 'undefined') return 'full';
+    const params = new URLSearchParams(window.location.search);
+    const p = params.get('plano') || params.get('plan') || params.get('tipo');
+    if (p === 'downsell' || p === 'basico' || p === 'basic') return 'downsell';
+    if (p === 'completo' || p === 'full' || p === 'pro') return 'full';
+    return (localStorage.getItem('kidflix-user-plan') as PlanType) || 'full';
+  });
   const [unlocked, setUnlocked] = useState<Record<string, string>>(() => {
     if (typeof window === 'undefined') return {};
     try {
@@ -43,6 +57,15 @@ export function KitAccessProvider({ children }: { children: ReactNode }) {
     const params = new URLSearchParams(window.location.search);
     const unlockKey = params.get('unlock') || params.get('unlocked');
     const customerEmail = params.get('email');
+    const p = params.get('plano') || params.get('plan') || params.get('tipo');
+
+    if (p === 'downsell' || p === 'basico' || p === 'basic') {
+      setPlan('downsell');
+      localStorage.setItem('kidflix-user-plan', 'downsell');
+    } else if (p === 'completo' || p === 'full' || p === 'pro') {
+      setPlan('full');
+      localStorage.setItem('kidflix-user-plan', 'full');
+    }
 
     const activeEmail = customerEmail ? customerEmail.trim().toLowerCase() : email;
 
@@ -52,6 +75,8 @@ export function KitAccessProvider({ children }: { children: ReactNode }) {
     }
 
     if (activeEmail && ADMIN_EMAILS.includes(activeEmail)) {
+      setPlan('full');
+      localStorage.setItem('kidflix-user-plan', 'full');
       setUnlocked(prev => {
         const updated = { ...prev, ...PDF_URLS };
         localStorage.setItem('kidflix-unlocked-kits', JSON.stringify(updated));
@@ -90,6 +115,8 @@ export function KitAccessProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('kidflix-user-email', cleanEmail);
 
     if (ADMIN_EMAILS.includes(cleanEmail)) {
+      setPlan('full');
+      localStorage.setItem('kidflix-user-plan', 'full');
       setUnlocked(prev => {
         const updated = { ...prev, ...PDF_URLS };
         localStorage.setItem('kidflix-unlocked-kits', JSON.stringify(updated));
@@ -153,11 +180,21 @@ export function KitAccessProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
     setEmail(null);
     setUnlocked({});
+    setPlan('full');
     localStorage.removeItem('kidflix-user-email');
     localStorage.removeItem('kidflix-unlocked-kits');
+    localStorage.removeItem('kidflix-user-plan');
   };
 
-  return <Ctx.Provider value={{ email, unlocked, loading, sendLink, signOut }}>{children}</Ctx.Provider>;
+  const upgradeUrl = email
+    ? `${FRONTEND_CHECKOUT_URL}${FRONTEND_CHECKOUT_URL.includes('?') ? '&' : '?'}email=${encodeURIComponent(email)}`
+    : FRONTEND_CHECKOUT_URL;
+
+  return (
+    <Ctx.Provider value={{ email, plan, unlocked, loading, sendLink, signOut, upgradeUrl }}>
+      {children}
+    </Ctx.Provider>
+  );
 }
 
 export function useKitAccess() {
@@ -165,10 +202,12 @@ export function useKitAccess() {
   if (!ctx) {
     return {
       email: null,
+      plan: 'full' as PlanType,
       unlocked: {},
       loading: false,
       sendLink: async () => null,
       signOut: async () => {},
+      upgradeUrl: FRONTEND_CHECKOUT_URL,
     };
   }
   return ctx;
