@@ -100,11 +100,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      has_paid_purchase: {
-        Args: { _email: string; _product_key: string }
-        Returns: boolean
-      }
-      paid_products_for_email: { Args: { _email: string }; Returns: string[] }
+      [_ in never]: never
     }
     Enums: {
       purchase_status: "pending" | "paid" | "refunded" | "chargeback"

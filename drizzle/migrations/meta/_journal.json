@@ -15,6 +15,13 @@
       "when": 1792026698853,
       "tag": "0001_add_private_kit_access_checks",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792026703086,
+      "tag": "0002_drop_deprecated_public_access_checks",
+      "breakpoints": true
     }
   ]
 }
