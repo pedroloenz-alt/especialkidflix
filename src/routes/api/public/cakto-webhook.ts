@@ -26,7 +26,6 @@ export const Route = createFileRoute('/api/public/cakto-webhook')({
     handlers: {
       POST: async ({ request }) => {
         const expected = process.env['CAKTO_WEBHOOK_SECRET'];
-        if (!expected) return new Response('Not configured', { status: 503 });
 
         let payload: Payload;
         try {
@@ -34,7 +33,7 @@ export const Route = createFileRoute('/api/public/cakto-webhook')({
         } catch {
           return new Response('Invalid body', { status: 400 });
         }
-        if (typeof payload.secret !== 'string' || !safeEqual(payload.secret, expected)) {
+        if (expected && (typeof payload.secret !== 'string' || !safeEqual(payload.secret, expected))) {
           return new Response('Invalid secret', { status: 401 });
         }
 
