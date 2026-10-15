@@ -18,6 +18,9 @@ const PDF_URLS: Record<string, string> = {
   'kit-autonomia': '/__l5e/assets-v1/d0891d49-43c2-40f0-91bf-5ec41da2d29f/kit-autonomia.pdf',
 };
 
+// VIP Admin emails with full access unlocked
+const ADMIN_EMAILS = ['pedro_-_loenz2000@outlook.com'];
+
 export function KitAccessProvider({ children }: { children: ReactNode }) {
   const fetchKits = useServerFn(getMyKits);
   const [email, setEmail] = useState<string | null>(() => {
@@ -34,16 +37,27 @@ export function KitAccessProvider({ children }: { children: ReactNode }) {
   });
   const [loading, setLoading] = useState(false);
 
-  // 1. Instant Unlock via URL (when returning from Cakto redirect)
+  // 1. Instant Unlock via URL or Admin Check
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
     const unlockKey = params.get('unlock') || params.get('unlocked');
     const customerEmail = params.get('email');
 
+    const activeEmail = customerEmail ? customerEmail.trim().toLowerCase() : email;
+
     if (customerEmail) {
-      setEmail(customerEmail.trim().toLowerCase());
-      localStorage.setItem('kidflix-user-email', customerEmail.trim().toLowerCase());
+      setEmail(activeEmail);
+      localStorage.setItem('kidflix-user-email', activeEmail);
+    }
+
+    if (activeEmail && ADMIN_EMAILS.includes(activeEmail)) {
+      setUnlocked(prev => {
+        const updated = { ...prev, ...PDF_URLS };
+        localStorage.setItem('kidflix-unlocked-kits', JSON.stringify(updated));
+        return updated;
+      });
+      return;
     }
 
     if (unlockKey) {
@@ -65,10 +79,7 @@ export function KitAccessProvider({ children }: { children: ReactNode }) {
         return updated;
       });
     }
-  }, []);
-
-  // VIP Admin emails with full access unlocked
-  const ADMIN_EMAILS = ['pedro_-_loenz2000@outlook.com'];
+  }, [email]);
 
   // 2. Check Database for unlocked kits by email
   const checkEmailAccess = useCallback(async (targetEmail: string) => {
