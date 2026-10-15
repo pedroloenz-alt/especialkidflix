@@ -13,36 +13,119 @@ type KitAccess = {
 
 const Ctx = createContext<KitAccess | null>(null);
 
+const PDF_URLS: Record<string, string> = {
+  'kit-regulacao-emocional': '/__l5e/assets-v1/ab9f73e1-f76e-45fb-a3d5-c3058ab7e94a/kit-regulacao-emocional.pdf',
+  'kit-autonomia': '/__l5e/assets-v1/d0891d49-43c2-40f0-91bf-5ec41da2d29f/kit-autonomia.pdf',
+};
+
 export function KitAccessProvider({ children }: { children: ReactNode }) {
   const fetchKits = useServerFn(getMyKits);
-  const [email, setEmail] = useState<string | null>(null);
-  const [unlocked, setUnlocked] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem('kidflix-user-email');
+  });
+  const [unlocked, setUnlocked] = useState<Record<string, string>>(() => {
+    if (typeof window === 'undefined') return {};
+    try {
+      return JSON.parse(localStorage.getItem('kidflix-unlocked-kits') || '{}');
+    } catch {
+      return {};
+    }
+  });
+  const [loading, setLoading] = useState(false);
+
+  // 1. Instant Unlock via URL (when returning from Cakto redirect)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const unlockKey = params.get('unlock') || params.get('unlocked');
+    const customerEmail = params.get('email');
+
+    if (customerEmail) {
+      setEmail(customerEmail.trim().toLowerCase());
+      localStorage.setItem('kidflix-user-email', customerEmail.trim().toLowerCase());
+    }
+
+    if (unlockKey) {
+      const normalizedKey = unlockKey === '1188129' || unlockKey.includes('regulacao') ? 'kit-regulacao-emocional'
+        : unlockKey === '1188138' || unlockKey.includes('autonomia') ? 'kit-autonomia'
+        : unlockKey;
+
+      if (PDF_URLS[normalizedKey]) {
+        setUnlocked(prev => {
+          const updated = { ...prev, [normalizedKey]: PDF_URLS[normalizedKey] };
+          localStorage.setItem('kidflix-unlocked-kits', JSON.stringify(updated));
+          return updated;
+        });
+      }
+    }
+  }, []);
+
+  // 2. Check Database for unlocked kits by email
+  const checkEmailAccess = useCallback(async (targetEmail: string) => {
+    if (!targetEmail) return;
+    setLoading(true);
+    const cleanEmail = targetEmail.trim().toLowerCase();
+    setEmail(cleanEmail);
+    localStorage.setItem('kidflix-user-email', cleanEmail);
+
+    try {
+      const { data, error } = await supabase
+        .from('purchases')
+        .select('product_key')
+        .eq('email', cleanEmail)
+        .eq('status', 'paid');
+
+      if (!error && data && data.length > 0) {
+        setUnlocked(prev => {
+          const updated = { ...prev };
+          data.forEach(p => {
+            if (PDF_URLS[p.product_key]) {
+              updated[p.product_key] = PDF_URLS[p.product_key];
+            }
+          });
+          localStorage.setItem('kidflix-unlocked-kits', JSON.stringify(updated));
+          return updated;
+        });
+      }
+    } catch (err) {
+      console.warn('Error checking purchases:', err);
+    }
+    setLoading(false);
+  }, []);
 
   const refresh = useCallback(async () => {
     const { data } = await supabase.auth.getSession();
-    if (!data.session) { setEmail(null); setUnlocked({}); setLoading(false); return; }
-    setEmail(data.session.user.email ?? null);
-    try {
-      const res = await fetchKits();
-      setUnlocked(Object.fromEntries(res.kits.map(k => [k.key, k.pdf])));
-    } catch { setUnlocked({}); }
-    setLoading(false);
-  }, [fetchKits]);
+    if (data.session?.user?.email) {
+      checkEmailAccess(data.session.user.email);
+    } else if (email) {
+      checkEmailAccess(email);
+    }
+  }, [checkEmailAccess, email]);
 
   useEffect(() => {
     refresh();
-    const { data } = supabase.auth.onAuthStateChange(event => {
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') refresh();
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user?.email) {
+        checkEmailAccess(session.user.email);
+      }
     });
     return () => data.subscription.unsubscribe();
-  }, [refresh]);
+  }, [refresh, checkEmailAccess]);
 
   const sendLink = async (address: string) => {
-    const { error } = await supabase.auth.signInWithOtp({ email: address.trim(), options: { emailRedirectTo: window.location.origin, shouldCreateUser: true } });
-    return error ? 'Não foi possível enviar o link agora. Tente novamente em instantes.' : null;
+    const clean = address.trim().toLowerCase();
+    await checkEmailAccess(clean);
+    return null;
   };
-  const signOut = async () => { await supabase.auth.signOut(); };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    setEmail(null);
+    setUnlocked({});
+    localStorage.removeItem('kidflix-user-email');
+    localStorage.removeItem('kidflix-unlocked-kits');
+  };
 
   return <Ctx.Provider value={{ email, unlocked, loading, sendLink, signOut }}>{children}</Ctx.Provider>;
 }
