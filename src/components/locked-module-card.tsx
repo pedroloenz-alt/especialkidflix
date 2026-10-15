@@ -2,8 +2,15 @@ import { Download, ExternalLink, LockKeyhole, Sparkles } from 'lucide-react';
 import type { ExtraModule } from '@/lib/modules';
 import { Button } from '@/components/ui/button';
 
+import { useKitAccess } from '@/lib/kit-access';
+
 export function LockedModuleCard({ module, index, pdf }: { module: ExtraModule; index: number; pdf?: string }) {
   const number = `EXTRA ${String(index + 1).padStart(2, '0')}`;
+  const { email } = useKitAccess();
+  const checkoutUrl = email
+    ? `${module.buyUrl}${module.buyUrl.includes('?') ? '&' : '?'}email=${encodeURIComponent(email)}`
+    : module.buyUrl;
+
   if (pdf) {
     return <article className="module-card" aria-label={`${module.title} — liberado`}>
       <div className="module-cover-link">
@@ -34,7 +41,7 @@ export function LockedModuleCard({ module, index, pdf }: { module: ExtraModule; 
       <p>{module.description}</p>
       <div className="module-card-bottom"><span><LockKeyhole size={13} />Bloqueado</span></div>
       <Button asChild className="buy-now-button">
-        <a href={module.buyUrl} target="_blank" rel="noopener noreferrer">Comprar agora</a>
+        <a href={checkoutUrl} target="_blank" rel="noopener noreferrer">Comprar agora</a>
       </Button>
     </div>
   </article>;
