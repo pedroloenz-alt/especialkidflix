@@ -49,6 +49,14 @@ export function KitAccessProvider({ children }: { children: ReactNode }) {
 
 export function useKitAccess() {
   const ctx = useContext(Ctx);
-  if (!ctx) throw new Error('useKitAccess must be used inside KitAccessProvider');
+  if (!ctx) {
+    return {
+      email: null,
+      unlocked: {},
+      loading: false,
+      sendLink: async () => null,
+      signOut: async () => {},
+    };
+  }
   return ctx;
 }
