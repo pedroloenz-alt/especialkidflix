@@ -14,3 +14,4 @@
 - Personalization, favorites and explored modules are device-local, not authentication; never use family names as an authorization boundary or upload them to a public database.
 - Serve original uploaded PDFs through Lovable Assets pointers and generated artwork through bundled imports; keep binary documents out of the repository.
 - Keep distinct content views in TanStack file routes and shared navigation in the Kidflix shell; the public index is the actual library experience.
+- Check kit purchases only from the app's own server session reading the purchase records; purchases and the unlock lookup stay closed to browser code, so a shopper's e-mail and payment status cannot be read or probed from the client.
