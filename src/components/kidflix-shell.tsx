@@ -18,11 +18,67 @@ export function FamilyForm({ onSaved }: { onSaved?: () => void }) {
   </form>;
 }
 
+import { useKitAccess } from '@/lib/kit-access';
+
+export function EmailAccessDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+  const { email, sendLink, signOut, unlocked } = useKitAccess();
+  const [inputEmail, setInputEmail] = useState('');
+  const [msg, setMsg] = useState<string | null>(null);
+
+  async function handleVerify(e: FormEvent) {
+    e.preventDefault();
+    if (!inputEmail.trim()) return;
+    setMsg('Consultando suas compras...');
+    await sendLink(inputEmail.trim());
+    setMsg('Pronto! Seus kits extras foram verificados e sincronizados.');
+    setTimeout(() => onOpenChange(false), 1500);
+  }
+
+  const unlockedCount = Object.keys(unlocked).length;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="family-dialog">
+        <span className="dialog-symbol"><Sparkles /></span>
+        <DialogTitle className="text-2xl">
+          {email ? 'Seu Acesso' : 'Já comprou um módulo extra?'}
+        </DialogTitle>
+        <DialogDescription>
+          {email
+            ? `Você está acessando como ${email}. ${unlockedCount > 0 ? `Possui ${unlockedCount} kit(s) extra(s) liberado(s).` : 'Nenhum kit extra vinculado ainda.'}`
+            : 'Digite o mesmo e-mail que você utilizou na compra da Cakto para liberar seus kits automaticamente neste dispositivo.'}
+        </DialogDescription>
+
+        {!email ? (
+          <form onSubmit={handleVerify} className="grid gap-3 mt-2">
+            <input
+              type="email"
+              required
+              placeholder="Digite seu e-mail de compra"
+              value={inputEmail}
+              onChange={e => setInputEmail(e.target.value)}
+              className="field h-11"
+            />
+            <Button type="submit" className="h-11">Liberar Meus Kits</Button>
+            {msg && <p className="text-xs text-primary font-medium text-center">{msg}</p>}
+          </form>
+        ) : (
+          <div className="flex flex-col gap-3 mt-2">
+            <Button variant="outline" onClick={() => signOut()}>Acessar com outro e-mail</Button>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export function KidflixShell({ children }: { children: ReactNode }) {
   const { family } = useFamily();
+  const { email } = useKitAccess();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [familyOpen, setFamilyOpen] = useState(false);
+  const [accessOpen, setAccessOpen] = useState(false);
   const [search, setSearch] = useState('');
   const nav = [{ to: '/', label: 'Início', icon: Home }, { to: '/modulos', label: 'Todos os módulos', icon: LayoutGrid }, { to: '/favoritos', label: 'Meus favoritos', icon: Heart }, { to: '/materiais', label: 'Meus materiais', icon: FolderDown }] as const;
   return <div className="kidflix-app">
@@ -40,8 +96,13 @@ export function KidflixShell({ children }: { children: ReactNode }) {
     <div className="main-area">
       <header className="topbar">
         <div className="flex items-center gap-3"><Button size="icon" variant="ghost" className="mobile-menu" aria-label="Abrir menu" onClick={() => setMenuOpen(true)}><Menu /></Button><span className="topbar-title">Seu espaço de descobertas</span><span className="topbar-mobile-brand">kidflix.</span></div>
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-3 md:gap-5">
           <form className="header-search" action="/modulos"><Search size={16} /><input name="busca" aria-label="Buscar atividades" placeholder="Buscar atividades" value={search} onChange={e => setSearch(e.target.value)} /></form>
+          <Button variant="outline" size="sm" onClick={() => setAccessOpen(true)} className="h-9 gap-1 text-xs font-semibold rounded-full px-3">
+            <Sparkles size={13} className="text-primary" />
+            <span className="hidden sm:inline">{email ? 'Meu Acesso' : 'Já comprei'}</span>
+            <span className="sm:hidden">Acesso</span>
+          </Button>
           <div className="topbar-divider" />
           <Button variant="ghost" onClick={() => setFamilyOpen(true)} className="family-button"><span className="profile-avatar">{family ? family.parent.slice(0, 1).toUpperCase() : <UserRound size={17} />}</span><span className="profile-label">{family?.parent || 'Sua família'}<small>Nosso cantinho</small></span><ChevronDown size={14} /></Button>
         </div>
@@ -50,5 +111,6 @@ export function KidflixShell({ children }: { children: ReactNode }) {
       <footer className="page-footer"><span className="footer-brand">especial kidflix.</span><span>Aprender, brincar e crescer. Juntos.<Heart size={12} /></span></footer>
     </div>
     <Dialog open={familyOpen} onOpenChange={setFamilyOpen}><DialogContent className="family-dialog"><span className="dialog-symbol"><Heart /></span><DialogTitle className="text-2xl">Um cantinho da sua família</DialogTitle><DialogDescription>Como podemos chamar você e seu pequeno?</DialogDescription><FamilyForm onSaved={() => setFamilyOpen(false)} /></DialogContent></Dialog>
+    <EmailAccessDialog open={accessOpen} onOpenChange={setAccessOpen} />
   </div>;
 }
