@@ -9,8 +9,6 @@ import cover8 from '@/assets/module-8.jpg';
 import cover9 from '@/assets/module-9.jpg';
 import emotionalCover from '@/assets/module-emotional-regulation.jpg';
 import autonomyCover from '@/assets/module-autonomy.jpg';
-import pdfRegulacao from '@/assets/kit-regulacao-emocional.pdf.asset.json';
-import pdfAutonomia from '@/assets/kit-autonomia.pdf.asset.json';
 import pdf1 from '@/assets/alfabeto.pdf.asset.json';
 import pdf2 from '@/assets/animais.pdf.asset.json';
 import pdf3 from '@/assets/bingo.pdf.asset.json';
@@ -34,11 +32,11 @@ export const modules = [
 ];
 export type KidModule = (typeof modules)[number];
 
-// Offers keep their deliverable attached, but it is never rendered or downloaded from the locked card until purchase verification exists.
+// Offers never carry their deliverable in browser code; the PDF comes from the server only after purchase verification.
 // The buy button points to the user-provided Cakto checkout; the deliverable pointer stays hidden from the card.
 export const extraModules = [
-  { id: 'kit-regulacao-emocional', title: 'Kit de Regulação Emocional para Crianças Autistas', category: 'Rotina e autonomia', cover: emotionalCover, pdf: pdfRegulacao.url, buyUrl: 'https://pay.cakto.com.br/7qj468z_1188129', pages: 19, locked: true, description: 'Cartões de emoções, necessidades e apoio, semáforo de comunicação, guia para momentos difíceis e cinco atividades práticas.' },
-  { id: 'kit-autonomia', title: 'Kit de Autonomia para Crianças Autistas', category: 'Rotina e autonomia', cover: autonomyCover, pdf: pdfAutonomia.url, buyUrl: 'https://pay.cakto.com.br/mg4ewrv_1188138', pages: 21, locked: true, description: 'Cartões de rotina, guias de higiene e de vestir-se, etiquetas, tarefas de casa e plano individual de apoio.' },
+  { id: 'kit-regulacao-emocional', title: 'Kit de Regulação Emocional para Crianças Autistas', category: 'Rotina e autonomia', cover: emotionalCover, buyUrl: 'https://pay.cakto.com.br/7qj468z_1188129', pages: 19, locked: true, description: 'Cartões de emoções, necessidades e apoio, semáforo de comunicação, guia para momentos difíceis e cinco atividades práticas.' },
+  { id: 'kit-autonomia', title: 'Kit de Autonomia para Crianças Autistas', category: 'Rotina e autonomia', cover: autonomyCover, buyUrl: 'https://pay.cakto.com.br/mg4ewrv_1188138', pages: 21, locked: true, description: 'Cartões de rotina, guias de higiene e de vestir-se, etiquetas, tarefas de casa e plano individual de apoio.' },
 ] as const;
 export type ExtraModule = (typeof extraModules)[number];
 

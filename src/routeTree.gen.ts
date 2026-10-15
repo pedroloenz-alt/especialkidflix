@@ -14,6 +14,7 @@ import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as MateriaisRouteImport } from './routes/materiais'
 import { Route as ModulosRouteImport } from './routes/modulos'
 import { Route as ModuloIdRouteImport } from './routes/modulo.$id'
+import { Route as ApiPublicCaktoWebhookRouteImport } from './routes/api/public/cakto-webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const ModuloIdRoute = ModuloIdRouteImport.update({
   path: '/modulo/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCaktoWebhookRoute = ApiPublicCaktoWebhookRouteImport.update({
+  id: '/api/public/cakto-webhook',
+  path: '/api/public/cakto-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/materiais': typeof MateriaisRoute
   '/modulos': typeof ModulosRoute
   '/modulo/$id': typeof ModuloIdRoute
+  '/api/public/cakto-webhook': typeof ApiPublicCaktoWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/materiais': typeof MateriaisRoute
   '/modulos': typeof ModulosRoute
   '/modulo/$id': typeof ModuloIdRoute
+  '/api/public/cakto-webhook': typeof ApiPublicCaktoWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,14 +70,33 @@ export interface FileRoutesById {
   '/materiais': typeof MateriaisRoute
   '/modulos': typeof ModulosRoute
   '/modulo/$id': typeof ModuloIdRoute
+  '/api/public/cakto-webhook': typeof ApiPublicCaktoWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/favoritos' | '/materiais' | '/modulos' | '/modulo/$id'
+  fullPaths:
+    | '/'
+    | '/favoritos'
+    | '/materiais'
+    | '/modulos'
+    | '/modulo/$id'
+    | '/api/public/cakto-webhook'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/favoritos' | '/materiais' | '/modulos' | '/modulo/$id'
+  to:
+    | '/'
+    | '/favoritos'
+    | '/materiais'
+    | '/modulos'
+    | '/modulo/$id'
+    | '/api/public/cakto-webhook'
   id:
-    '__root__' | '/' | '/favoritos' | '/materiais' | '/modulos' | '/modulo/$id'
+    | '__root__'
+    | '/'
+    | '/favoritos'
+    | '/materiais'
+    | '/modulos'
+    | '/modulo/$id'
+    | '/api/public/cakto-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -78,6 +105,7 @@ export interface RootRouteChildren {
   MateriaisRoute: typeof MateriaisRoute
   ModulosRoute: typeof ModulosRoute
   ModuloIdRoute: typeof ModuloIdRoute
+  ApiPublicCaktoWebhookRoute: typeof ApiPublicCaktoWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -117,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModuloIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cakto-webhook': {
+      id: '/api/public/cakto-webhook'
+      path: '/api/public/cakto-webhook'
+      fullPath: '/api/public/cakto-webhook'
+      preLoaderRoute: typeof ApiPublicCaktoWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -126,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   MateriaisRoute: MateriaisRoute,
   ModulosRoute: ModulosRoute,
   ModuloIdRoute: ModuloIdRoute,
+  ApiPublicCaktoWebhookRoute: ApiPublicCaktoWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
