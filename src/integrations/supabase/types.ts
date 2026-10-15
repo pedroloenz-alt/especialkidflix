@@ -14,16 +14,100 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      provider_webhook_events: {
+        Row: {
+          event_id: string | null
+          event_type: string | null
+          id: string
+          payload: Json
+          processed_at: string | null
+          processed_status: string
+          provider: string
+          received_at: string
+        }
+        Insert: {
+          event_id?: string | null
+          event_type?: string | null
+          id?: string
+          payload: Json
+          processed_at?: string | null
+          processed_status?: string
+          provider?: string
+          received_at?: string
+        }
+        Update: {
+          event_id?: string | null
+          event_type?: string | null
+          id?: string
+          payload?: Json
+          processed_at?: string | null
+          processed_status?: string
+          provider?: string
+          received_at?: string
+        }
+        Relationships: []
+      }
+      purchases: {
+        Row: {
+          amount_cents: number | null
+          checkout_url: string | null
+          created_at: string
+          currency: string
+          email: string
+          external_reference: string | null
+          id: string
+          paid_at: string | null
+          product_key: string
+          provider: string
+          provider_order_id: string | null
+          status: Database["public"]["Enums"]["purchase_status"]
+          updated_at: string
+        }
+        Insert: {
+          amount_cents?: number | null
+          checkout_url?: string | null
+          created_at?: string
+          currency?: string
+          email: string
+          external_reference?: string | null
+          id?: string
+          paid_at?: string | null
+          product_key: string
+          provider?: string
+          provider_order_id?: string | null
+          status?: Database["public"]["Enums"]["purchase_status"]
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number | null
+          checkout_url?: string | null
+          created_at?: string
+          currency?: string
+          email?: string
+          external_reference?: string | null
+          id?: string
+          paid_at?: string | null
+          product_key?: string
+          provider?: string
+          provider_order_id?: string | null
+          status?: Database["public"]["Enums"]["purchase_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      kit_access_list: { Args: { _email: string }; Returns: string[] }
+      kit_access_state: {
+        Args: { _email: string; _product_key: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      purchase_status: "pending" | "paid" | "refunded" | "chargeback"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +234,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      purchase_status: ["pending", "paid", "refunded", "chargeback"],
+    },
   },
 } as const
