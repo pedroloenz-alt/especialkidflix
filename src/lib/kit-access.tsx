@@ -47,17 +47,23 @@ export function KitAccessProvider({ children }: { children: ReactNode }) {
     }
 
     if (unlockKey) {
-      const normalizedKey = unlockKey === '1188129' || unlockKey.includes('regulacao') ? 'kit-regulacao-emocional'
-        : unlockKey === '1188138' || unlockKey.includes('autonomia') ? 'kit-autonomia'
-        : unlockKey;
+      const keysToUnlock = unlockKey === 'all' || unlockKey === 'todos' || unlockKey === 'ambos'
+        ? ['kit-regulacao-emocional', 'kit-autonomia']
+        : unlockKey.split(',').map(k => {
+            const trimmed = k.trim();
+            if (trimmed === '1188129' || trimmed.includes('regulacao')) return 'kit-regulacao-emocional';
+            if (trimmed === '1188138' || trimmed.includes('autonomia')) return 'kit-autonomia';
+            return trimmed;
+          });
 
-      if (PDF_URLS[normalizedKey]) {
-        setUnlocked(prev => {
-          const updated = { ...prev, [normalizedKey]: PDF_URLS[normalizedKey] };
-          localStorage.setItem('kidflix-unlocked-kits', JSON.stringify(updated));
-          return updated;
+      setUnlocked(prev => {
+        const updated = { ...prev };
+        keysToUnlock.forEach(k => {
+          if (PDF_URLS[k]) updated[k] = PDF_URLS[k];
         });
-      }
+        localStorage.setItem('kidflix-unlocked-kits', JSON.stringify(updated));
+        return updated;
+      });
     }
   }, []);
 
